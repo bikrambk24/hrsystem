@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-2">My Attendance</h2>
+<p class="text-muted">Today: <strong>{{ today }}</strong></p>
+
+<div class="row mb-3 g-3">
+ <div class="col-md-6">
+   <div class="card shadow-sm">
+     <div class="card-body">
+       <h5 class="mb-3">Today</h5>
+
+       <div class="mb-2">
+         <span class="text-muted">Clock In:</span>
+         <strong>{% if today_att.clock_in %}{{ today_att.clock_in|date:"H:i:s" }}{% else %}-{% endif %}</strong>
+       </div>
+
+       <div class="mb-2">
+         <span class="text-muted">Clock Out:</span>
+         <strong>{% if today_att.clock_out %}{{ today_att.clock_out|date:"H:i:s" }}{% else %}-{% endif %}</strong>
+       </div>
+
+       <div class="mb-3">
+         <span class="text-muted">Total Time:</span>
+         <strong>{{ today_att.total_time }}</strong>
+       </div>
+
+       <div class="d-flex gap-2">
+         <form method="post" action="{% url 'clock_in' %}">
+           {% csrf_token %}
+           <button class="btn btn-success" {% if today_att.clock_in %}disabled{% endif %}>Clock In</button>
+         </form>
+
+         <form method="post" action="{% url 'clock_out' %}">
+           {% csrf_token %}
+           <button class="btn btn-danger" {% if not today_att.clock_in or today_att.clock_out %}disabled{% endif %}>Clock Out</button>
+         </form>
+       </div>
+
+       <p class="small text-muted mt-3 mb-0">
+         Rules: clock in/out only once per day. Must clock in before clock out.
+       </p>
+     </div>
+   </div>
+ </div>
+
+ <div class="col-md-6">
+   <div class="card shadow-sm">
+     <div class="card-body">
+       <h5 class="mb-3">Quick Summary</h5>
+
+       <div class="d-flex justify-content-between">
+         <div class="text-muted">Current</div>
+         <div class="fw-bold">
+           {% if today_att.clock_in and not today_att.clock_out %}
+             Clocked In (in progress)
+           {% elif today_att.clock_in and today_att.clock_out %}
+             Completed
+           {% else %}
+             Not clocked in
+           {% endif %}
+         </div>
+       </div>
+
+       <hr>
+
+       <div class="d-flex justify-content-between">
+         <div class="text-muted">Total Time</div>
+         <div class="fw-bold">{{ today_att.total_time }}</div>
+       </div>
+     </div>
+   </div>
+ </div>
+</div>
+
+<div class="card shadow-sm">
+ <div class="card-body">
+   <h5 class="mb-3">Last 30 Days</h5>
+   <div class="table-responsive">
+     <table class="table table-hover mb-0 align-middle">
+       <thead class="table-light">
+         <tr>
+           <th>Date</th>
+           <th>Clock In</th>
+           <th>Clock Out</th>
+           <th>Total Time</th>
+         </tr>
+       </thead>
+       <tbody>
+       {% for r in history %}
+         <tr>
+           <td class="fw-semibold">{{ r.date }}</td>
+           <td>{% if r.clock_in %}{{ r.clock_in|date:"H:i:s" }}{% else %}-{% endif %}</td>
+           <td>{% if r.clock_out %}{{ r.clock_out|date:"H:i:s" }}{% else %}-{% endif %}</td>
+           <td>
+             {% if r.clock_in and r.clock_out %}
+               <span class="badge bg-success">{{ r.total_time }}</span>
+             {% elif r.clock_in and not r.clock_out %}
+               <span class="badge bg-warning text-dark">In progress</span>
+             {% else %}
+               <span class="text-muted">-</span>
+             {% endif %}
+           </td>
+         </tr>
+       {% empty %}
+         <tr><td colspan="4" class="text-center text-muted p-4">No attendance records yet.</td></tr>
+       {% endfor %}
+       </tbody>
+     </table>
+   </div>
+ </div>
+</div>
+{% endblock %}
