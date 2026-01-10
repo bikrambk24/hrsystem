@@ -1,0 +1,56 @@
+{
+  "dbs": [
+    {
+      "employee_id": "EMP00001",
+      "dbs_number": "DBS-12345",
+      "full_name": "John Smith",
+      "status": "CLEAR"
+    },
+    {
+      "employee_id": "EMP00002",
+      "dbs_number": "DBS-99999",
+      "full_name": "Alice Brown",
+      "status": "CLEAR"
+    }
+  ],
+  "bank": [
+    {
+      "employee_id": "EMP00001",
+      "account_name": "John Smith",
+      "sort_code": "11-22-33",
+      "account_number": "12345678"
+    },
+    {
+      "employee_id": "EMP00002",
+      "account_name": "Alice Brown",
+      "sort_code": "44-55-66",
+      "account_number": "87654321"
+    }
+  ],
+  "home_office": [
+    {
+      "employee_id": "EMP00001",
+      "visa_ref": "HO-ABC-111",
+      "full_name": "John Smith",
+      "right_to_work": true
+    },
+    {
+      "employee_id": "EMP00002",
+      "visa_ref": "HO-XYZ-222",
+      "full_name": "Alice Brown",
+      "right_to_work": true
+    }
+  ],
+  "credit": [
+    {
+      "employee_id": "EMP00001",
+      "credit_ref": "CR-777",
+      "score_band": "GOOD"
+    },
+    {
+      "employee_id": "EMP00002",
+      "credit_ref": "CR-888",
+      "score_band": "GOOD"
+    }
+  ]
+}
