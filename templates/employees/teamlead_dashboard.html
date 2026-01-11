@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-3">Team Lead Dashboard</h2>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Team size</div>
+                <div class="fs-3 fw-bold">{{ team_size }}</div>
+                <a class="btn btn-outline-dark mt-2" href="{% url 'team_members' %}">View team</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Pending leave requests</div>
+                <div class="fs-3 fw-bold">{{ pending }}</div>
+                <a class="btn btn-outline-dark mt-2" href="{% url 'leave_team_requests' %}">Approve/Reject</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

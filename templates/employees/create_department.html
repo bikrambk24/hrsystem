@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h3 class="mb-2">Create Department</h3>
+                <form method="post">{% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Department name</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger small">{{ form.name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button class="btn btn-dark">Create</button>
+                    <a class="btn btn-outline-secondary" href="{% url 'hr_employee_list' %}">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll("input").forEach(el => el.classList.add("form-control"));
+</script>
+{% endblock %}
