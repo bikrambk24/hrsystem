@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Employees</h2>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-dark" href="{% url 'create_department' %}">+ Department</a>
+        <a class="btn btn-dark" href="{% url 'hr_employee_create' %}">+ Employee</a>
+    </div>
+</div>
+
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input class="form-control" name="q" value="{{ q }}" placeholder="Search by name, email, employee id, department, designation...">
+        <button class="btn btn-outline-secondary">Search</button>
+        <a class="btn btn-outline-secondary" href="{% url 'hr_employee_list' %}">Reset</a>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Employee ID</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    {% with e=row.emp %}
+                        <tr>
+                            <td style="width:60px;">
+                                {% if e.profile_picture %}
+                                    <img src="{{ e.profile_picture.url }}" style="width:40px;height:40px;object-fit:cover;border-radius:50%;">
+                                {% else %}
+                                    <div class="bg-secondary-subtle" style="width:40px;height:40px;border-radius:50%;"></div>
+                                {% endif %}
+                            </td>
+                            <td class="fw-semibold">{{ e.full_name }}</td>
+                            <td>{{ e.employee_id }}</td>
+                            <td>{{ e.user.email }}</td>
+                            <td>{{ e.department.name }}</td>
+                            <td>{{ e.designation }}</td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#empModal{{ e.id }}">View</button>
+                                <a class="btn btn-sm btn-outline-secondary" href="{% url 'hr_employee_edit' e.id %}">Edit</a>
+                                <a class="btn btn-sm btn-outline-success" href="{% url 'check_page' e.id 'dbs' %}">Checks</a>
+                                <a class="btn btn-sm btn-outline-danger" href="{% url 'hr_employee_delete' e.id %}">Delete</a>
+                            </td>
+                        </tr>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="empModal{{ e.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{{ e.full_name }} ({{ e.employee_id }})</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-4 text-center">
+                                                {% if e.profile_picture %}
+                                                    <img src="{{ e.profile_picture.url }}" class="img-fluid rounded-circle" style="width:160px;height:160px;object-fit:cover;">
+                                                {% else %}
+                                                    <div class="bg-secondary-subtle rounded-circle d-inline-block" style="width:160px;height:160px;"></div>
+                                                {% endif %}
+                                                <div class="mt-2 text-muted small">{{ e.user.email }}</div>
+                                            </div>
+
+                                            <div class="col-md-8">
+                                                <div class="card shadow-sm">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-6 mb-2"><span class="text-muted">Joined:</span> <strong>{{ e.joining_date }}</strong></div>
+                                                            <div class="col-6 mb-2"><span class="text-muted">Employment:</span> <strong>{{ e.get_employment_type_display }}</strong></div>
+                                                            <div class="col-6 mb-2"><span class="text-muted">Department:</span> <strong>{{ e.department.name }}</strong></div>
+                                                            <div class="col-6 mb-2"><span class="text-muted">Designation:</span> <strong>{{ e.designation }}</strong></div>
+                                                            <div class="col-12 mb-2"><span class="text-muted">Manager:</span> <strong>{% if e.manager %}{{ e.manager.email }}{% else %}—{% endif %}</strong></div>
+                                                            <div class="col-6 mb-2"><span class="text-muted">Gender:</span> <strong>{{ e.get_gender_display }}</strong></div>
+                                                            <div class="col-6 mb-2"><span class="text-muted">DOB:</span> <strong>{% if e.date_of_birth %}{{ e.date_of_birth }}{% else %}—{% endif %}</strong></div>
+                                                            <div class="col-12 mb-2"><span class="text-muted">Education:</span> <strong>{{ e.get_education_display }}</strong></div>
+                                                            <div class="col-6 mb-2"><span class="text-muted">Leave entitlement:</span> <strong>{{ e.annual_leave_entitlement }}</strong></div>
+                                                            <div class="col-6 mb-2"><span class="text-muted">Leave balance:</span> <strong>{{ row.leave_balance }}</strong></div>
+                                                        </div>
+
+                                                        <hr>
+                                                        <div class="row">
+                                                            <div class="col-6 mb-2"><span class="text-muted">Phone:</span> <strong>{{ e.phone|default:"—" }}</strong></div>
+                                                            <div class="col-6 mb-2"><span class="text-muted">Emergency:</span> <strong>{{ e.emergency_contact|default:"—" }}</strong></div>
+                                                            <div class="col-12 mb-2"><span class="text-muted">Address:</span> <strong>{{ e.address|default:"—" }}</strong></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                        <a class="btn btn-dark" href="{% url 'hr_employee_edit' e.id %}">Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted p-4">No employees found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

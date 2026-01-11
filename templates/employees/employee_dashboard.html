@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-3">Employee Dashboard</h2>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Leave balance</div>
+                <div class="fs-3 fw-bold">{{ leave_balance }}</div>
+                <a class="btn btn-outline-dark mt-2" href="{% url 'leave_dashboard' %}">My leave</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Pending requests</div>
+                <div class="fs-3 fw-bold">{{ pending }}</div>
+                <a class="btn btn-outline-dark mt-2" href="{% url 'leave_apply' %}">Apply leave</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
