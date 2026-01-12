@@ -18,7 +18,7 @@ def login_view(request):
         email = form.cleaned_data["email"]
         password = form.cleaned_data["password"]
 
-        # authenticate using email as username (works if your USERNAME_FIELD is email)
+        
         user = authenticate(request, username=email, password=password)
         if user is None:
             messages.error(request, "Invalid email or password.")
@@ -26,7 +26,7 @@ def login_view(request):
 
         auth_login(request, user)
 
-        # first-login password change
+       
         if getattr(user, "must_change_password", False):
             return redirect("force_change_password")
 
@@ -64,11 +64,10 @@ def force_change_password(request):
         new_password = form.cleaned_data["new_password"]
 
         user = request.user
-        user.set_password(new_password)          # ✅ correct hashing
-        user.must_change_password = False        # ✅ stop forcing
+        user.set_password(new_password)          
+        user.must_change_password = False        
         user.save()
 
-        # keep session valid after password change
         update_session_auth_hash(request, user)
 
         messages.success(request, "Password updated successfully.")
